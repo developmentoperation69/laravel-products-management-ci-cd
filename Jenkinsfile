@@ -4,25 +4,38 @@ pipeline {
     stages {
         stage('Start') {
             steps {
-                echo 'Codomax Laravel Project Pipeline Started'
+                echo 'Codomax Laravel CI Pipeline Started'
             }
         }
 
         stage('Checkout') {
             steps {
-                echo 'Project source code checkout successful'
+                echo 'GitHub source code checkout successful'
             }
         }
 
-        stage('Build') {
+        stage('Install Dependencies') {
             steps {
-                echo 'Laravel project build stage'
+                sh 'composer install --no-interaction --prefer-dist'
+            }
+        }
+
+        stage('Laravel Setup') {
+            steps {
+                sh 'cp .env.example .env'
+                sh 'php artisan key:generate'
+            }
+        }
+
+        stage('Run Tests') {
+            steps {
+                sh 'php artisan test'
             }
         }
 
         stage('Complete') {
             steps {
-                echo 'Codomax CI/CD Pipeline Completed Successfully'
+                echo 'Codomax Laravel CI Pipeline Completed Successfully'
             }
         }
     }
